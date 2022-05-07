@@ -1,0 +1,46 @@
+<p-table [value]="lstTipoClientes" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" responsiveLayout="scroll"
+currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} tipos de clientes" [rowsPerPageOptions]="[10,25,50]">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Placa</th>
+            <th>Fecha de Registro</th>
+            <th>Tipo Vehiculo</th>
+            <th><button class="btn btn-success"  (click)="abreModal()">Nuevo</button></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-tcliente>
+        <tr>
+            <td>{{tcliente.cvePlaca}}</td>
+            <td>{{tcliente.fechaRegistro}}</td>
+            <td>{{getDescTipoVehiculo(tcliente.tipoVehiculo)}}</td>
+            <td><button class="btn btn-outline-danger" (click)="eliminaTipoCliente(tcliente.cvePlaca)">Elimina</button></td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog header="Header" [(visible)]="modalNvoTipoVehiculo" [style]="{width: '50vw'}">
+   <form [formGroup]="formNvoTipoCliente" (ngSubmit)="creaTipoCliente()">
+        <div>
+            <label for="txtFolioUjed">Placa</label>
+            <input type="text" class="form-control" id="txtFolioUjed" formControlName="cvePlaca">
+            <div *ngIf="fn['cvePlaca'].touched && fn['cvePlaca'].invalid" class="alert-danger" style="padding: 5px;">
+                <div *ngIf="fn['cvePlaca'].errors && fn['cvePlaca'].errors['minlength']">Deben ser al menos 7 caracteres</div>
+            </div>
+        </div>
+        <div>
+            <label for="txtFolioUjed">Tipo Vehiculo</label>
+            <select formControlName="tipoVehiculo" class="form-select">
+                <option value="">Selecciona una opcion</option>
+                <option *ngFor="let tv of lstTipoVehiculo" value="{{tv.cveTipoVehiculo}}">{{tv.descTipoVehiculo}}</option>
+            </select>
+            <div *ngIf="fn['tipoVehiculo'].touched && fn['tipoVehiculo'].invalid" class="alert-danger" style="padding: 5px;">
+                <div *ngIf="fn['tipoVehiculo'].errors && fn['tipoVehiculo'].errors['required']">Debes seleccionar el tipo de vehiculo</div>
+            </div>
+        </div>
+        <br>
+        <div>
+            <button type="submit" [disabled]="formNvoTipoCliente.invalid" class="btn btn-outline-success">Guardar</button>
+            <button type="button" class="btn btn-outline-danger" (click)="modalNvoTipoVehiculo=false">Cerrar</button>
+        </div>
+    </form>
+</p-dialog>
